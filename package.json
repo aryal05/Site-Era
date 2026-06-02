@@ -1,0 +1,16 @@
+{
+  "name": "site-era",
+  "version": "1.0.0",
+  "description": "Site Era - Premium Web & Mobile App Development Company",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "build": "npm run build --prefix client",
+    "start": "node server/index.js"
+  },
+  "keywords": [],
+  "author": "Rajat Aryal",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^10.0.1"
+  }
+}
