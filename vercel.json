@@ -2,10 +2,10 @@
   "version": 2,
   "name": "siteera",
   "framework": "vite",
-  "buildCommand": "cd client && npm run build",
+  "buildCommand": "cd client && npm install && npm run build",
   "outputDirectory": "client/dist",
   "devCommand": "cd client && npm run dev",
-  "installCommand": "npm install",
+  "installCommand": "npm install && npm install --prefix client",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" }
   ]
