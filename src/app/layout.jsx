@@ -5,18 +5,18 @@ import ClientLayout from '@/components/layout/ClientLayout';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata = {
-  title: 'SiteEra - Premium Web & Mobile App Development',
-  description: 'Transform your digital presence with SiteEra. We craft exceptional web and mobile applications that drive results.',
-  keywords: ['web development', 'mobile app', 'digital agency', 'react', 'next.js'],
-  authors: [{ name: 'SiteEra' }],
+  title: 'CodeVerse - Premium Web & Mobile App Development',
+  description: 'Transform your digital presence with CodeVerse. We craft exceptional web and mobile applications that drive results.',
+  keywords: ['web development', 'mobile app', 'digital agency', 'react', 'next.js', 'codeverse'],
+  authors: [{ name: 'CodeVerse' }],
   icons: {
     icon: '/icon.svg',
   },
   openGraph: {
-    title: 'SiteEra - Premium Web & Mobile App Development',
-    description: 'Transform your digital presence with SiteEra.',
-    url: 'https://siteera.com',
-    siteName: 'SiteEra',
+    title: 'CodeVerse - Premium Web & Mobile App Development',
+    description: 'Transform your digital presence with CodeVerse. We craft exceptional web and mobile applications that drive results.',
+    url: 'https://codeverse-eosin.vercel.app',
+    siteName: 'CodeVerse',
     type: 'website',
   },
 };

@@ -11,11 +11,18 @@ const ThemeToggle = () => {
   useEffect(() => {
     setMounted(true);
     const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    // Default to light mode unless explicitly set to dark
+    if (savedTheme === 'dark') {
       setIsDark(true);
       document.documentElement.classList.add('dark');
+    } else {
+      setIsDark(false);
+      document.documentElement.classList.remove('dark');
+      // Set light as default if no preference saved
+      if (!savedTheme) {
+        localStorage.setItem('theme', 'light');
+      }
     }
   }, []);
 
