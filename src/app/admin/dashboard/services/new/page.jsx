@@ -24,18 +24,34 @@ export default function NewServicePage() {
     setLoading(true);
     
     try {
-      await fetch('/api/services', {
+      const slug = formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-');
+      
+      const response = await fetch('/api/services', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
+          title: formData.name, // Service model expects 'title'
+          slug: slug,
+          shortDescription: formData.description,
+          description: formData.description,
+          icon: formData.icon,
           features: formData.features.split('\n').filter(f => f.trim()),
-          slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-')
+          active: true,
+          featured: false
         })
       });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        console.error('Error creating service:', error);
+        alert('Failed to create service: ' + (error.error || 'Unknown error'));
+        return;
+      }
+      
       router.push('/admin/dashboard/services');
     } catch (err) {
-      console.error(err);
+      console.error('Service creation error:', err);
+      alert('Failed to create service. Please try again.');
     } finally {
       setLoading(false);
     }

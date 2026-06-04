@@ -32,10 +32,12 @@ export default function EditServicePage() {
       .then(data => {
         if (data) {
           setFormData({
-            name: data.name || '',
+            name: data.title || data.name || '',
             slug: data.slug || '',
             description: data.description || '',
-            features: Array.isArray(data.features) ? data.features.join('\n') : '',
+            features: Array.isArray(data.features) 
+              ? data.features.map(f => typeof f === 'string' ? f : f.title || f.description || '').join('\n') 
+              : '',
             icon: data.icon || 'code'
           });
         }
@@ -48,17 +50,30 @@ export default function EditServicePage() {
     setLoading(true);
     
     try {
-      await fetch(`/api/services/${params.id}`, {
+      const response = await fetch(`/api/services/${params.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
+          title: formData.name,
+          slug: formData.slug,
+          shortDescription: formData.description,
+          description: formData.description,
+          icon: formData.icon,
           features: formData.features.split('\n').filter(f => f.trim())
         })
       });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        console.error('Error updating service:', error);
+        alert('Failed to update service');
+        return;
+      }
+      
       router.push('/admin/dashboard/services');
     } catch (err) {
-      console.error(err);
+      console.error('Update error:', err);
+      alert('Failed to update service. Please try again.');
     } finally {
       setLoading(false);
     }
