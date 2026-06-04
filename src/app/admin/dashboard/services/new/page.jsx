@@ -26,16 +26,27 @@ export default function NewServicePage() {
     try {
       const slug = formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-');
       
+      // Convert features from string array to object array
+      const featuresArray = formData.features
+        .split('\n')
+        .filter(f => f.trim())
+        .map(feature => ({
+          title: feature.trim(),
+          description: '',
+          icon: ''
+        }));
+      
       const response = await fetch('/api/services', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: formData.name, // Service model expects 'title'
+          title: formData.name,
           slug: slug,
           shortDescription: formData.description,
           description: formData.description,
           icon: formData.icon,
-          features: formData.features.split('\n').filter(f => f.trim()),
+          features: featuresArray,
+          technologies: [],
           active: true,
           featured: false
         })

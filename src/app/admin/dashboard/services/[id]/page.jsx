@@ -50,6 +50,16 @@ export default function EditServicePage() {
     setLoading(true);
     
     try {
+      // Convert features from string array to object array
+      const featuresArray = formData.features
+        .split('\n')
+        .filter(f => f.trim())
+        .map(feature => ({
+          title: feature.trim(),
+          description: '',
+          icon: ''
+        }));
+      
       const response = await fetch(`/api/services/${params.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -59,7 +69,7 @@ export default function EditServicePage() {
           shortDescription: formData.description,
           description: formData.description,
           icon: formData.icon,
-          features: formData.features.split('\n').filter(f => f.trim())
+          features: featuresArray
         })
       });
       
