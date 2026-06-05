@@ -7,7 +7,7 @@ import Testimonials from "@/components/sections/Testimonials";
 import CTA from "@/components/sections/CTA";
 import { getDb } from "@/lib/api-helpers";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 async function getHomepageData() {
   try {
