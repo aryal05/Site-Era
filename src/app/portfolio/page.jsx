@@ -1,9 +1,9 @@
 import PortfolioPage from "@/components/pages/PortfolioPage";
-import { getDb, safeImageUrl } from "@/lib/api-helpers";
+import { getDb } from "@/lib/api-helpers";
 
-// ISR: safe now that base64 images are stripped by safeImageUrl().
-// Snapshot is tiny (only text + URLs). Revalidates every 60 seconds.
-export const revalidate = 60;
+// force-dynamic: admin may store base64 images which are large.
+// ISR would fail with FALLBACK_BODY_TOO_LARGE for base64 images.
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Our Portfolio - CodeVerse",
@@ -31,7 +31,7 @@ export default async function Portfolio() {
       createdAt: row.created_at,
       // Replace base64 images with null - gradient placeholder shows instead.
       // Base64 strings are 2-10 MB each and make the page payload enormous.
-      image: safeImageUrl(row.image),
+      image: row.image,
     }));
   } catch {
     projects = [];

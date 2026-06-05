@@ -5,7 +5,7 @@ import Portfolio from "@/components/sections/Portfolio";
 import Process from "@/components/sections/Process";
 import Testimonials from "@/components/sections/Testimonials";
 import CTA from "@/components/sections/CTA";
-import { getDb, safeImageUrl } from "@/lib/api-helpers";
+import { getDb } from "@/lib/api-helpers";
 
 // ISR: serve from cache, revalidate in background every 60 seconds
 export const revalidate = 60;
@@ -49,7 +49,7 @@ async function getHomepageData() {
       id: row.id,
       title: row.title,
       slug: row.slug,
-      image: safeImageUrl(row.image), // strip base64
+      image: row.image,
       category: row.category,
       client: row.client,
       description: row.description,

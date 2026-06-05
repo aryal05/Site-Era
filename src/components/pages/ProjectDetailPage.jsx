@@ -148,6 +148,7 @@ const ProjectDetail = ({ project }) => {
                   sizes="100vw"
                   className="object-contain"
                   priority
+                  unoptimized
                 />
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
@@ -189,6 +190,7 @@ const ProjectDetail = ({ project }) => {
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-contain transition-transform duration-300"
+                    unoptimized
                   />
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
