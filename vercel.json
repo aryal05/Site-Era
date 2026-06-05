@@ -1,8 +1,4 @@
 {
   "version": 2,
-  "name": "codeverse",
-  "framework": "nextjs",
-  "buildCommand": "next build",
-  "outputDirectory": ".next",
-  "installCommand": "npm install"
+  "framework": "nextjs"
 }
