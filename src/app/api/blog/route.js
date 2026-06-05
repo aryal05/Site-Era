@@ -1,52 +1,88 @@
 import { NextResponse } from "next/server";
-import { blogPayload, getDb, handleApiError, mapBlog } from "@/lib/api-helpers";
+import {
+  blogPayload,
+  byIdOrSlug,
+  getDb,
+  handleApiError,
+  mapBlog,
+  notFound,
+} from "@/lib/api-helpers";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
-export async function GET(request) {
+const BLOG_DETAIL_COLUMNS = `
+  id,
+  title,
+  slug,
+  excerpt,
+  content,
+  image,
+  author,
+  category,
+  tags,
+  read_time,
+  published,
+  featured,
+  created_at,
+  updated_at,
+  meta_title,
+  meta_description
+`;
+
+export async function GET(_request, context) {
   try {
+    const { slug } = await context.params;
     const db = getDb();
-    const { searchParams } = new URL(request.url);
 
-    let query = db
-      .from("blog")
-      .select("*")
-      .order("created_at", { ascending: false });
+    const { data, error } = await byIdOrSlug(
+      db.from("blog").select(BLOG_DETAIL_COLUMNS),
+      slug,
+    ).maybeSingle();
 
-    if (searchParams.get("published") === "true")
-      query = query.eq("published", true);
-    if (searchParams.get("featured") === "true")
-      query = query.eq("featured", true);
-    if (searchParams.get("category"))
-      query = query.eq("category", searchParams.get("category"));
-    if (searchParams.get("limit"))
-      query = query.limit(Number(searchParams.get("limit")));
-
-    const { data, error } = await query;
     if (error) throw error;
+    if (!data) return notFound("Blog post");
 
-    return NextResponse.json((data || []).map(mapBlog));
+    return NextResponse.json(mapBlog(data), {
+      headers: {
+        "Cache-Control": "s-maxage=300, stale-while-revalidate=86400",
+      },
+    });
   } catch (error) {
-    return handleApiError(error, "Failed to fetch blog posts");
+    return handleApiError(error, "Failed to fetch blog post");
   }
 }
 
-export async function POST(request) {
+export async function PUT(request, context) {
   try {
+    const { slug } = await context.params;
     const db = getDb();
     const body = await request.json();
-    const payload = blogPayload(body, { insert: true });
+    const payload = blogPayload(body);
 
-    const { data, error } = await db
-      .from("blog")
-      .insert(payload)
-      .select("*")
-      .single();
+    const { data, error } = await byIdOrSlug(
+      db.from("blog").update(payload).select("*"),
+      slug,
+    ).maybeSingle();
 
     if (error) throw error;
+    if (!data) return notFound("Blog post");
 
-    return NextResponse.json(mapBlog(data), { status: 201 });
+    return NextResponse.json(mapBlog(data));
   } catch (error) {
-    return handleApiError(error, "Failed to create blog post");
+    return handleApiError(error, "Failed to update blog post");
+  }
+}
+
+export async function DELETE(_request, context) {
+  try {
+    const { slug } = await context.params;
+    const db = getDb();
+
+    const { error } = await byIdOrSlug(db.from("blog").delete(), slug);
+    if (error) throw error;
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return handleApiError(error, "Failed to delete blog post");
   }
 }

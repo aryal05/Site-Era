@@ -1,63 +1,46 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { Calendar, Clock, ArrowRight, Search } from 'lucide-react';
-import PageHeader from '@/components/ui/PageHeader';
+import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { Calendar, Clock, Search } from "lucide-react";
+import PageHeader from "@/components/ui/PageHeader";
 
-const BlogPage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('All');
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState(['All']);
+const BlogPage = ({ initialPosts = [] }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
 
-  // Fetch blog posts from API
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await fetch('/api/blog');
-        const data = await res.json();
-        setPosts(data);
-        
-        // Extract unique categories
-        const uniqueCategories = ['All', ...new Set(data.map(p => p.category).filter(Boolean))];
-        setCategories(uniqueCategories);
-      } catch (error) {
-        console.error('Failed to fetch blog posts:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const categories = useMemo(() => {
+    return [
+      "All",
+      ...new Set(initialPosts.map((p) => p.category).filter(Boolean)),
+    ];
+  }, [initialPosts]);
 
-    fetchPosts();
-  }, []);
+  const filteredPosts = useMemo(() => {
+    return initialPosts.filter((post) => {
+      const matchesCategory =
+        activeCategory === "All" || post.category === activeCategory;
+      const matchesSearch =
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (post.excerpt || "").toLowerCase().includes(searchQuery.toLowerCase());
 
-  const filteredPosts = posts.filter(post => {
-    const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
-    const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+      return matchesCategory && matchesSearch;
+    });
+  }, [initialPosts, activeCategory, searchQuery]);
 
-  const featuredPost = posts.find(post => post.featured);
+  const featuredPost = useMemo(() => {
+    return initialPosts.find((post) => post.featured);
+  }, [initialPosts]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 }
-    }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
   return (
@@ -69,11 +52,9 @@ const BlogPage = () => {
         description="Stay updated with the latest trends, tutorials, and insights from our team of experts."
       />
 
-      {/* Search & Filters */}
       <section className="py-8 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800">
         <div className="container mx-auto px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            {/* Search */}
             <div className="relative w-full md:w-80">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
@@ -85,7 +66,6 @@ const BlogPage = () => {
               />
             </div>
 
-            {/* Categories */}
             <div className="flex flex-wrap justify-center gap-2">
               {categories.map((category) => (
                 <motion.button
@@ -95,8 +75,8 @@ const BlogPage = () => {
                   whileTap={{ scale: 0.98 }}
                   className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
                     activeCategory === category
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      ? "bg-primary-600 text-white"
+                      : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                   }`}
                 >
                   {category}
@@ -107,8 +87,7 @@ const BlogPage = () => {
         </div>
       </section>
 
-      {/* Featured Post */}
-      {!loading && featuredPost && activeCategory === 'All' && !searchQuery && (
+      {featuredPost && activeCategory === "All" && !searchQuery && (
         <section className="py-12 bg-gray-50 dark:bg-gray-900">
           <div className="container mx-auto px-6 lg:px-8">
             <motion.div
@@ -118,7 +97,6 @@ const BlogPage = () => {
             >
               <Link href={`/blog/${featuredPost.slug}`}>
                 <div className="group grid lg:grid-cols-2 gap-8 bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-large transition-all">
-                  {/* Image */}
                   <div className="h-64 relative overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                     {featuredPost.image ? (
                       <img
@@ -129,7 +107,9 @@ const BlogPage = () => {
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-primary-500 to-purple-600">
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-white/20 text-9xl font-bold">F</span>
+                          <span className="text-white/20 text-9xl font-bold">
+                            F
+                          </span>
                         </div>
                       </div>
                     )}
@@ -138,7 +118,6 @@ const BlogPage = () => {
                     </div>
                   </div>
 
-                  {/* Content */}
                   <div className="p-8 lg:p-10 flex flex-col justify-center">
                     <span className="text-xs font-medium text-primary-600 bg-primary-50 dark:bg-primary-900/30 px-2.5 py-1 rounded-full w-fit mb-4">
                       {featuredPost.category}
@@ -150,16 +129,23 @@ const BlogPage = () => {
                       {featuredPost.excerpt}
                     </p>
                     <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                      <span>{featuredPost.author?.name || 'Admin'}</span>
+                      <span>{featuredPost.author?.name || "Admin"}</span>
                       <span>•</span>
                       <span className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
-                        {new Date(featuredPost.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        {new Date(featuredPost.createdAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          },
+                        )}
                       </span>
                       <span>•</span>
                       <span className="flex items-center gap-1">
                         <Clock className="w-4 h-4" />
-                        {featuredPost.readTime || '5 min read'}
+                        {featuredPost.readTime || "5 min read"}
                       </span>
                     </div>
                   </div>
@@ -170,20 +156,14 @@ const BlogPage = () => {
         </section>
       )}
 
-      {/* Blog Grid */}
       <section className="py-16 lg:py-24 bg-white dark:bg-gray-950">
         <div className="container mx-auto px-6 lg:px-8">
-          {loading ? (
-            <div className="text-center py-20">
-              <div className="inline-block w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
-              <p className="mt-4 text-gray-600 dark:text-gray-400">Loading blog posts...</p>
-            </div>
-          ) : filteredPosts.length === 0 ? (
+          {filteredPosts.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-gray-600 dark:text-gray-400 text-lg">
-                {posts.length === 0 
-                  ? 'No blog posts yet. Add some from the admin panel!' 
-                  : 'No articles found matching your criteria.'}
+                {initialPosts.length === 0
+                  ? "No blog posts yet. Add some from the admin panel!"
+                  : "No articles found matching your criteria."}
               </p>
             </div>
           ) : (
@@ -193,21 +173,17 @@ const BlogPage = () => {
               animate="visible"
               className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              {filteredPosts.filter(p => !p.featured || activeCategory !== 'All' || searchQuery).map((post, index) => {
-                const formattedDate = new Date(post.createdAt).toLocaleDateString('en-US', { 
-                  month: 'short', 
-                  day: 'numeric', 
-                  year: 'numeric' 
-                });
-                
-                return (
+              {filteredPosts
+                .filter(
+                  (p) => !p.featured || activeCategory !== "All" || searchQuery,
+                )
+                .map((post) => (
                   <motion.div
                     key={post._id || post.slug}
                     variants={itemVariants}
                   >
                     <Link href={`/blog/${post.slug}`}>
                       <div className="group h-full bg-gray-50 dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 hover:border-primary-200 dark:hover:border-primary-800 hover:shadow-large transition-all">
-                        {/* Image */}
                         <div className="h-48 relative overflow-hidden bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
                           {post.image ? (
                             <img
@@ -226,7 +202,6 @@ const BlogPage = () => {
                           )}
                         </div>
 
-                        {/* Content */}
                         <div className="p-6">
                           <span className="text-xs font-medium text-primary-600 bg-primary-50 dark:bg-primary-900/30 px-2.5 py-1 rounded-full">
                             {post.category}
@@ -238,27 +213,25 @@ const BlogPage = () => {
                             {post.excerpt}
                           </p>
                           <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                            <span>{post.author?.name || 'Admin'}</span>
+                            <span>{post.author?.name || "Admin"}</span>
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3" />
-                              {post.readTime || '5 min read'}
+                              {post.readTime || "5 min read"}
                             </span>
                           </div>
                         </div>
                       </div>
                     </Link>
                   </motion.div>
-                );
-              })}
+                ))}
             </motion.div>
           )}
         </div>
       </section>
 
-      {/* Newsletter CTA */}
       <section className="py-20 lg:py-28 bg-primary-600">
         <div className="container mx-auto px-6 lg:px-8">
-          <motion.div 
+          <motion.div
             className="max-w-2xl mx-auto text-center"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -269,7 +242,8 @@ const BlogPage = () => {
               Subscribe to Our Newsletter
             </h2>
             <p className="text-primary-100 mb-8">
-              Get the latest articles, tutorials, and updates delivered straight to your inbox.
+              Get the latest articles, tutorials, and updates delivered straight
+              to your inbox.
             </p>
             <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input
