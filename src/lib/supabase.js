@@ -25,7 +25,7 @@ const getEnvVars = () => ({
   ),
 });
 
-// ─── Server-side admin client ────────────────────────────────────────────────
+// Server-side admin client
 // Cached at module scope so we reuse the same HTTP connection pool across
 // requests in the same server process (avoids a new TCP+TLS handshake per call).
 // Safe because env vars are always set by the time the first request arrives.
@@ -62,7 +62,7 @@ export function createClient() {
 // Backwards compat stub (routes now call getSupabaseAdmin() at request time)
 export const supabaseAdmin = null;
 
-// ─── Browser client ──────────────────────────────────────────────────────────
+// Browser client
 export const supabase =
   typeof window !== "undefined"
     ? (() => {
