@@ -12,7 +12,7 @@ export async function generateMetadata({ params }) {
   let title = "Project Details - CodeVerse";
   try {
     const db = getDb();
-    // Use isUuid to pick the right column — prevents Supabase UUID parse error
+    // Use isUuid to pick the right column - prevents Supabase UUID parse error
     const query = isUuid(id)
       ? db.from("projects").select("title").eq("id", id)
       : db.from("projects").select("title").eq("slug", id);
@@ -27,7 +27,7 @@ export default async function ProjectDetail({ params }) {
   let project = null;
   try {
     const db = getDb();
-    // Correctly route by UUID or slug — never mix types in the same query
+    // Correctly route by UUID or slug - never mix types in the same query
     const query = isUuid(id)
       ? db.from("projects").select("*").eq("id", id)
       : db.from("projects").select("*").eq("slug", id);
