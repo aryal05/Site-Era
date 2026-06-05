@@ -5,18 +5,40 @@ import Portfolio from "@/components/sections/Portfolio";
 import Process from "@/components/sections/Process";
 import Testimonials from "@/components/sections/Testimonials";
 import CTA from "@/components/sections/CTA";
+import { getDb } from "@/lib/api-helpers";
+
+export const revalidate = 300;
 
 async function getFeaturedProjects() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
   try {
-    const res = await fetch(`${baseUrl}/api/projects?featured=true&limit=6`, {
-      next: { revalidate: 300 },
-    });
+    const db = getDb();
 
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
+    const { data, error } = await db
+      .from("projects")
+      .select("id,title,slug,image,category,client,description,created_at")
+      .eq("featured", true)
+      .order("order", { ascending: true, nullsFirst: false })
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    if (error) {
+      console.error("Failed to fetch featured projects:", error);
+      return [];
+    }
+
+    return (data || []).map((row) => ({
+      id: row.id,
+      title: row.title,
+      slug: row.slug,
+      image: row.image,
+      category: row.category,
+      client: row.client,
+      description: row.description,
+      createdAt: row.created_at,
+      technologies: [],
+    }));
+  } catch (error) {
+    console.error("Failed to fetch featured projects:", error);
     return [];
   }
 }
