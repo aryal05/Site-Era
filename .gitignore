@@ -43,6 +43,9 @@ yarn-error.log*
 # Vercel
 .vercel
 
+# Old leftover scripts (deleted from git but still on disk)
+scripts/
+
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
