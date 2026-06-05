@@ -3,10 +3,10 @@ node_modules/
 .pnp
 .pnp.js
 
-# Old folders (to be deleted manually)
-client/
-server/
-api/
+# Old root-level folders (to be deleted manually)
+/client/
+/server/
+/api/
 
 # Testing
 coverage/
