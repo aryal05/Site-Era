@@ -8,7 +8,7 @@ const nextConfig = {
 
   async redirects() {
     return [
-      // Browsers auto-request favicon.ico — redirect to our SVG icon
+      // Browsers auto-request favicon.ico - redirect to our SVG icon
       {
         source: "/favicon.ico",
         destination: "/icon.svg",
