@@ -93,7 +93,7 @@ const Portfolio = ({ projects = [] }) => {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="sync">
               {filteredProjects.map((project, index) => {
                 const color = colors[index % colors.length];
                 const year = project.createdAt
