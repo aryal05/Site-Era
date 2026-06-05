@@ -143,7 +143,9 @@ const DashboardVisual = () => {
                       <motion.div
                         className={`h-full bg-gradient-to-r ${card.color} rounded-full`}
                         initial={{ width: 0 }}
-                        animate={{ width: `${60 + Math.random() * 35}%` }}
+                        animate={{
+                          width: `${[75, 88, 65, 92, 78, 85, 70, 95][index * 2 + i] || 75}%`,
+                        }}
                         transition={{
                           duration: 1.5,
                           delay: 0.5 + index * 0.2,

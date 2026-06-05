@@ -7,8 +7,7 @@ import Testimonials from "@/components/sections/Testimonials";
 import CTA from "@/components/sections/CTA";
 import { getDb } from "@/lib/api-helpers";
 
-// ISR: serve from cache, revalidate in background every 60 seconds
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 async function getHomepageData() {
   try {
