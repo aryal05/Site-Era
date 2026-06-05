@@ -1,59 +1,73 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
+// Get environment variables
+const getEnvVars = () => {
+  return {
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY
+  };
+};
+
 // Helper function to create a Supabase client (for server-side API routes)
 export function createClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const { url, serviceKey } = getEnvVars();
 
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Missing Supabase environment variables. Please check NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set.');
+  if (!url || !serviceKey) {
+    console.error('Supabase environment variables missing:', {
+      url: !!url,
+      serviceKey: !!serviceKey
+    });
+    throw new Error('Missing Supabase environment variables');
   }
 
-  return createSupabaseClient(
-    supabaseUrl,
-    supabaseKey,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
+  return createSupabaseClient(url, serviceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
     }
-  );
+  });
 }
 
-// Supabase client for client-side (browser)
-export const supabase = (() => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+// Create admin client
+let adminClient = null;
 
-  if (!supabaseUrl || !supabaseKey) {
+export const getSupabaseAdmin = () => {
+  if (adminClient) return adminClient;
+  
+  const { url, serviceKey } = getEnvVars();
+
+  if (!url || !serviceKey) {
+    console.error('Supabase admin environment variables missing:', {
+      url: !!url,
+      serviceKey: !!serviceKey
+    });
+    return null;
+  }
+
+  adminClient = createSupabaseClient(url, serviceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  });
+
+  return adminClient;
+};
+
+// For backwards compatibility
+export const supabaseAdmin = getSupabaseAdmin();
+
+// Supabase client for client-side (browser)
+export const supabase = typeof window !== 'undefined' ? (() => {
+  const { url, anonKey } = getEnvVars();
+
+  if (!url || !anonKey) {
     console.error('Missing Supabase environment variables for client');
     return null;
   }
 
-  return createSupabaseClient(supabaseUrl, supabaseKey);
-})();
-
-// Supabase client for server-side with service role (bypasses RLS)
-export const supabaseAdmin = (() => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !supabaseKey) {
-    console.error('Missing Supabase environment variables for admin');
-    return null;
-  }
-
-  return createSupabaseClient(
-    supabaseUrl,
-    supabaseKey,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    }
-  );
-})();
+  return createSupabaseClient(url, anonKey);
+})() : null;
 
 export default supabase;
