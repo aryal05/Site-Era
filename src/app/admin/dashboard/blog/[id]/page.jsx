@@ -30,11 +30,19 @@ export default function EditBlogPostPage() {
       return;
     }
     
+    console.log('Fetching blog post with ID:', params.id);
     fetch(`/api/blog/${params.id}`)
-      .then(res => res.json())
+      .then(res => {
+        console.log('Response status:', res.status);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
         console.log('Fetched blog data:', data);
-        if (data) {
+        console.log('Data keys:', data ? Object.keys(data) : 'No data');
+        if (data && !data.error) {
           setFormData({
             title: data.title || '',
             excerpt: data.excerpt || '',
@@ -44,6 +52,8 @@ export default function EditBlogPostPage() {
             published: data.published || false,
             image: data.image || ''
           });
+        } else {
+          console.error('Error in response:', data);
         }
       })
       .catch(err => {
