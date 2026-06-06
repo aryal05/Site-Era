@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
 import {
   Code2,
   Smartphone,
@@ -15,6 +14,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import PageHeader from "@/components/ui/PageHeader";
+import OptimizedImage from "@/components/ui/OptimizedImage";
 
 const ServicesPage = ({ initialServices }) => {
   const [services, setServices] = useState(initialServices || []);
@@ -130,14 +130,14 @@ const ServicesPage = ({ initialServices }) => {
                       {/* Show image banner if available */}
                       {service.image && (
                         <div className="w-full h-48 lg:h-56 overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                          <Image
+                          <OptimizedImage
                             src={service.image}
                             alt={service.title}
-                            className="w-full h-full object-contain"
+                            className="w-full h-full object-cover"
                             width={800}
-                            height={600}
+                            height={400}
                             loading="lazy"
-                            unoptimized
+                            quality="auto"
                           />
                         </div>
                       )}

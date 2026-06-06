@@ -1,9 +1,8 @@
 import PortfolioPage from "@/components/pages/PortfolioPage";
 import { getDb } from "@/lib/api-helpers";
 
-// force-dynamic: admin may store base64 images which are large.
-// ISR would fail with FALLBACK_BODY_TOO_LARGE for base64 images.
-export const dynamic = "force-dynamic";
+// Revalidate every 60 seconds - balances freshness with fast navigation
+export const revalidate = 60;
 
 export const metadata = {
   title: "Our Portfolio - CodeVerse",
@@ -11,29 +10,53 @@ export const metadata = {
     "Explore our portfolio of successful web and mobile app projects.",
 };
 
-export default async function Portfolio() {
-  let projects = [];
-  try {
-    const db = getDb();
-    const { data } = await db
-      .from("projects")
-      // Exclude gallery (may contain many base64 images) from the list view.
-      // The detail page fetches gallery separately when the user opens a project.
-      .select(
-        'id, title, slug, description, category, image, technologies, client, created_at, featured, status, "order"',
-      )
-      .order("order", { ascending: true })
-      .order("created_at", { ascending: false });
+async function getProjects() {
+  const db = getDb();
 
-    projects = (data || []).map((row) => ({
+  // Optimized query: Fetch image URLs directly (Cloudinary only, no base64)
+  const { data, error } = await db
+    .from("projects")
+    .select(
+      'id, title, slug, description, category, technologies, client, link, image, created_at, featured, status, "order"',
+    )
+    .order("order", { ascending: true, nullsFirst: false })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching projects:", error);
+    return [];
+  }
+  
+  if (!data || data.length === 0) return [];
+
+  // Filter and process: Only include Cloudinary URLs (skip base64)
+  return data.map((row) => {
+    let imageUrl = null;
+    
+    // Only include Cloudinary URLs for fast loading
+    if (row.image && typeof row.image === 'string') {
+      if (row.image.includes('cloudinary.com') || row.image.startsWith('http')) {
+        // Valid URL - use it
+        imageUrl = row.image;
+      }
+      // Skip base64 images entirely - they'll show gradient placeholder
+    }
+
+    return {
       ...row,
       _id: row.id,
       createdAt: row.created_at,
-      // Replace base64 images with null - gradient placeholder shows instead.
-      // Base64 strings are 2-10 MB each and make the page payload enormous.
-      image: row.image,
-    }));
-  } catch {
+      image: imageUrl, // Cloudinary URL or null (gradient)
+    };
+  });
+}
+
+export default async function Portfolio() {
+  let projects = [];
+  try {
+    projects = await getProjects();
+  } catch (err) {
+    console.error("Portfolio page error:", err);
     projects = [];
   }
   return <PortfolioPage projects={projects} />;

@@ -1,0 +1,248 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║                     FIX 401 ADMIN LOGIN ERROR                              ║
+║                          Visual Guide                                      ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  CURRENT ERROR:                                                            │
+│  ══════════════                                                            │
+│                                                                            │
+│  ┌──────────────────────────────────────────────────────────────┐        │
+│  │  ⚠️ 401 Unauthorized                                         │        │
+│  │                                                               │        │
+│  │  Invalid credentials                                          │        │
+│  └──────────────────────────────────────────────────────────────┘        │
+│                                                                            │
+│  WHY: Admin user doesn't exist in database yet!                           │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  SOLUTION (3 Easy Options):                                               │
+│  ═══════════════════════════                                               │
+│                                                                            │
+│  ┌────────────────────────────────────────────────────────────┐          │
+│  │                                                             │          │
+│  │  OPTION 1: HTML Tool ⭐ EASIEST!                           │          │
+│  │  ═══════════════════                                        │          │
+│  │                                                             │          │
+│  │  1. Double-click: CREATE_ADMIN.html                        │          │
+│  │                                                             │          │
+│  │  2. Browser opens → Click button                           │          │
+│  │     ┌───────────────────────────────┐                      │          │
+│  │     │  [Create Admin User]          │                      │          │
+│  │     └───────────────────────────────┘                      │          │
+│  │                                                             │          │
+│  │  3. Done! ✅                                                │          │
+│  │                                                             │          │
+│  └────────────────────────────────────────────────────────────┘          │
+│                                                                            │
+│  ┌────────────────────────────────────────────────────────────┐          │
+│  │                                                             │          │
+│  │  OPTION 2: API Endpoint                                    │          │
+│  │  ═══════════════════                                        │          │
+│  │                                                             │          │
+│  │  1. Open browser                                            │          │
+│  │                                                             │          │
+│  │  2. Visit:                                                  │          │
+│  │     http://localhost:3000/api/create-admin                 │          │
+│  │                                                             │          │
+│  │  3. See JSON response ✅                                    │          │
+│  │                                                             │          │
+│  └────────────────────────────────────────────────────────────┘          │
+│                                                                            │
+│  ┌────────────────────────────────────────────────────────────┐          │
+│  │                                                             │          │
+│  │  OPTION 3: SQL Script                                      │          │
+│  │  ═══════════════════                                        │          │
+│  │                                                             │          │
+│  │  1. Go to: https://app.supabase.com                        │          │
+│  │                                                             │          │
+│  │  2. SQL Editor → New Query                                 │          │
+│  │                                                             │          │
+│  │  3. Copy from: CREATE_ADMIN_USER.sql                       │          │
+│  │                                                             │          │
+│  │  4. Paste → Run ✅                                          │          │
+│  │                                                             │          │
+│  └────────────────────────────────────────────────────────────┘          │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  AFTER CREATING USER:                                                     │
+│  ════════════════════                                                      │
+│                                                                            │
+│  ┌──────────────────────────────────────────────────────────┐            │
+│  │                                                           │            │
+│  │  1. Go to: http://localhost:3000/admin                   │            │
+│  │                                                           │            │
+│  │  2. Login Screen:                                         │            │
+│  │     ┌───────────────────────────────────────┐            │            │
+│  │     │  Username: [admin          ]          │            │            │
+│  │     │  Password: [admin123       ]          │            │            │
+│  │     │                                        │            │            │
+│  │     │      [Sign In →]                      │            │            │
+│  │     └───────────────────────────────────────┘            │            │
+│  │                                                           │            │
+│  │  3. ✅ Redirects to Dashboard!                           │            │
+│  │                                                           │            │
+│  └──────────────────────────────────────────────────────────┘            │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  DEFAULT CREDENTIALS:                                                     │
+│  ════════════════════                                                      │
+│                                                                            │
+│  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓              │
+│  ┃                                                        ┃              │
+│  ┃  Username:  admin                                     ┃              │
+│  ┃  Password:  admin123                                  ┃              │
+│  ┃                                                        ┃              │
+│  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛              │
+│                                                                            │
+│  ⚠️ Change this password after first login!                               │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  VERIFICATION FLOWCHART:                                                  │
+│  ═══════════════════════                                                   │
+│                                                                            │
+│        Start                                                               │
+│          │                                                                 │
+│          ▼                                                                 │
+│    ┌─────────────┐                                                        │
+│    │ Try Login   │                                                        │
+│    └─────────────┘                                                        │
+│          │                                                                 │
+│          ▼                                                                 │
+│    ┌─────────────┐     Yes    ┌──────────────┐                           │
+│    │ 401 Error?  ├──────────→ │ Create Admin │                           │
+│    └─────────────┘            │ User (above) │                           │
+│          │                     └──────────────┘                           │
+│          │ No                         │                                   │
+│          ▼                            │                                   │
+│    ┌─────────────┐                   │                                   │
+│    │ Success! ✅  │◄──────────────────┘                                   │
+│    │ Dashboard   │                                                        │
+│    └─────────────┘                                                        │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  TROUBLESHOOTING:                                                         │
+│  ════════════════                                                          │
+│                                                                            │
+│  ❓ "CREATE_ADMIN.html doesn't work"                                      │
+│  ├─ Is dev server running?                                                │
+│  │  └─ Run: npm run dev                                                   │
+│  └─ Check: http://localhost:3000                                          │
+│                                                                            │
+│  ❓ "Still 401 after creating user"                                       │
+│  ├─ Check Supabase Table Editor → users                                  │
+│  │  └─ Is admin user there?                                               │
+│  ├─ Username: exactly "admin" (no spaces)                                │
+│  └─ Password: exactly "admin123" (no spaces)                             │
+│                                                                            │
+│  ❓ "Table 'users' does not exist"                                        │
+│  ├─ Run supabase-schema.sql first                                        │
+│  └─ Then create admin user                                                │
+│                                                                            │
+│  ❓ "User already exists"                                                 │
+│  ├─ User was created!                                                     │
+│  ├─ Try login: admin / admin123                                          │
+│  └─ Forgot password? Run: RESET_ADMIN_PASSWORD.sql                       │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  QUICK CHECKLIST:                                                         │
+│  ════════════════                                                          │
+│                                                                            │
+│  Before Creating Admin:                                                   │
+│  [ ] Dev server is running (npm run dev)                                 │
+│  [ ] Can access http://localhost:3000                                     │
+│  [ ] .env.local has Supabase credentials                                 │
+│                                                                            │
+│  Creating Admin:                                                          │
+│  [ ] Opened CREATE_ADMIN.html                                             │
+│  [ ] Clicked "Create Admin User"                                          │
+│  [ ] Saw success message                                                  │
+│                                                                            │
+│  Testing Login:                                                           │
+│  [ ] Go to http://localhost:3000/admin                                    │
+│  [ ] Enter: admin / admin123                                             │
+│  [ ] Click Sign In                                                        │
+│  [ ] Redirects to dashboard ✅                                            │
+│                                                                            │
+│  After Login:                                                             │
+│  [ ] Change password in Settings                                          │
+│  [ ] Test admin panel features                                            │
+│  [ ] Run CLEAN_IMAGES_SIMPLE.sql                                          │
+│  [ ] Ready for production                                                 │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║                    🎯 RECOMMENDED STEPS                                    ║
+║                                                                            ║
+║  1. Double-click: CREATE_ADMIN.html                                        ║
+║                                                                            ║
+║  2. Click: "Create Admin User" button                                      ║
+║                                                                            ║
+║  3. Login at: http://localhost:3000/admin                                  ║
+║     Username: admin                                                        ║
+║     Password: admin123                                                     ║
+║                                                                            ║
+║  4. ✅ Done! You're in the dashboard!                                      ║
+║                                                                            ║
+║  Time needed: 1 minute                                                     ║
+║  Difficulty: Very Easy                                                     ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+
+FILES YOU NEED:
+═══════════════
+
+  📄 CREATE_ADMIN.html              ⭐ Use this! (easiest)
+  📄 FIX_ADMIN_401_NOW.txt          Quick instructions
+  📄 ADMIN_LOGIN_SUMMARY.md         Complete guide
+  📄 CREATE_ADMIN_USER.sql          Manual SQL method
+  📄 VERIFY_ADMIN.sql               Check if user exists
+  📄 RESET_ADMIN_PASSWORD.sql       Reset if forgot password
+
+
+REMEMBER:
+═════════
+
+✓ Default password is for development only
+✓ Change password after first login
+✓ Never use "admin123" in production
+✓ This is a one-time setup
+
+
+═══════════════════════════════════════════════════════════════════════════
+
+You got this! Just open CREATE_ADMIN.html and click the button! 🚀
+
+═══════════════════════════════════════════════════════════════════════════

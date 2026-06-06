@@ -5,9 +5,9 @@ import Portfolio from "@/components/sections/Portfolio";
 import Process from "@/components/sections/Process";
 import Testimonials from "@/components/sections/Testimonials";
 import CTA from "@/components/sections/CTA";
-import { getDb } from "@/lib/api-helpers";
+import { getDb, safeImageUrl } from "@/lib/api-helpers";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 async function getHomepageData() {
   try {
@@ -16,7 +16,7 @@ async function getHomepageData() {
     const [projectsRes, servicesRes, testimonialsRes] = await Promise.all([
       db
         .from("projects")
-        .select("id,title,slug,image,category,client,description,created_at")
+        .select("id,title,slug,category,client,description,link,image,created_at")
         .eq("featured", true)
         .order("order", { ascending: true, nullsFirst: false })
         .order("created_at", { ascending: false })
@@ -48,10 +48,11 @@ async function getHomepageData() {
       id: row.id,
       title: row.title,
       slug: row.slug,
-      image: row.image,
+      image: safeImageUrl(row.image),
       category: row.category,
       client: row.client,
       description: row.description,
+      link: row.link,
       createdAt: row.created_at,
       technologies: [],
     }));

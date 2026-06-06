@@ -37,13 +37,14 @@ export default function EditProjectPage() {
     fetch(`/api/projects/${params.id}`)
       .then(res => res.json())
       .then(data => {
+        console.log('Fetched project data:', data);
         if (data) {
           setFormData({
             title: data.title || '',
             description: data.description || '',
             category: data.category || '',
             client: data.client || '',
-            technologies: Array.isArray(data.technologies) ? data.technologies.join(', ') : '',
+            technologies: Array.isArray(data.technologies) ? data.technologies.join(', ') : (data.technologies || ''),
             liveUrl: data.link || data.liveUrl || '',
             githubUrl: data.github || data.githubUrl || '',
             featured: data.featured || false,
@@ -52,7 +53,9 @@ export default function EditProjectPage() {
           });
         }
       })
-      .catch(console.error);
+      .catch(err => {
+        console.error('Failed to fetch project:', err);
+      });
   }, [params.id, router]);
 
   const handleSubmit = async (e) => {

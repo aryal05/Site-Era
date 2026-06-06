@@ -32,6 +32,7 @@ export default function EditServicePage() {
     fetch(`/api/services/${params.id}`)
       .then(res => res.json())
       .then(data => {
+        console.log('Fetched service data:', data);
         if (data) {
           setFormData({
             name: data.title || data.name || '',
@@ -45,7 +46,9 @@ export default function EditServicePage() {
           });
         }
       })
-      .catch(console.error);
+      .catch(err => {
+        console.error('Failed to fetch service:', err);
+      });
   }, [params.id, router]);
 
   const handleSubmit = async (e) => {

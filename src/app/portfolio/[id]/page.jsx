@@ -1,39 +1,43 @@
 import ProjectDetailPage from "@/components/pages/ProjectDetailPage";
-import { getDb, isUuid } from "@/lib/api-helpers";
+import { getDb, isUuid, safeImageUrl } from "@/lib/api-helpers";
 import { notFound } from "next/navigation";
 
-// force-dynamic: detail pages can have large base64 images stored by the admin.
-// ISR would fail with FALLBACK_BODY_TOO_LARGE. Each detail page is one project
-// so the Supabase query is fast enough even without caching.
-export const dynamic = "force-dynamic";
+// Revalidate every 60 seconds for fast repeat visits
+export const revalidate = 60;
 
-export async function generateMetadata({ params }) {
-  const { id } = await params;
-  let title = "Project Details - CodeVerse";
+// Select only necessary columns to avoid large base64 payloads
+const PROJECT_COLUMNS = `
+  id,
+  title,
+  slug,
+  description,
+  full_description,
+  category,
+  image,
+  gallery,
+  technologies,
+  client,
+  duration,
+  link,
+  github,
+  featured,
+  status,
+  "order",
+  meta_title,
+  meta_description,
+  created_at,
+  updated_at
+`;
+
+async function getProject(id) {
   try {
     const db = getDb();
-    // Use isUuid to pick the right column - prevents Supabase UUID parse error
     const query = isUuid(id)
-      ? db.from("projects").select("title").eq("id", id)
-      : db.from("projects").select("title").eq("slug", id);
-    const { data } = await query.maybeSingle();
-    if (data?.title) title = `${data.title} - CodeVerse`;
-  } catch {}
-  return { title, description: "View project details and case study." };
-}
-
-export default async function ProjectDetail({ params }) {
-  const { id } = await params;
-  let project = null;
-  try {
-    const db = getDb();
-    // Correctly route by UUID or slug - never mix types in the same query
-    const query = isUuid(id)
-      ? db.from("projects").select("*").eq("id", id)
-      : db.from("projects").select("*").eq("slug", id);
+      ? db.from("projects").select(PROJECT_COLUMNS).eq("id", id)
+      : db.from("projects").select(PROJECT_COLUMNS).eq("slug", id);
     const { data } = await query.maybeSingle();
     if (data) {
-      project = {
+      return {
         ...data,
         _id: data.id,
         createdAt: data.created_at,
@@ -42,6 +46,21 @@ export default async function ProjectDetail({ params }) {
       };
     }
   } catch {}
+  return null;
+}
+
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+  const project = await getProject(id);
+  return {
+    title: project?.title ? `${project.title} - CodeVerse` : "Project Details - CodeVerse",
+    description: project?.description || "View project details and case study.",
+  };
+}
+
+export default async function ProjectDetail({ params }) {
+  const { id } = await params;
+  const project = await getProject(id);
   if (!project) notFound();
   return <ProjectDetailPage project={project} />;
 }

@@ -33,19 +33,22 @@ export default function EditBlogPostPage() {
     fetch(`/api/blog/${params.id}`)
       .then(res => res.json())
       .then(data => {
+        console.log('Fetched blog data:', data);
         if (data) {
           setFormData({
             title: data.title || '',
             excerpt: data.excerpt || '',
             content: data.content || '',
             category: data.category || '',
-            tags: Array.isArray(data.tags) ? data.tags.join(', ') : '',
+            tags: Array.isArray(data.tags) ? data.tags.join(', ') : (data.tags || ''),
             published: data.published || false,
             image: data.image || ''
           });
         }
       })
-      .catch(console.error);
+      .catch(err => {
+        console.error('Failed to fetch blog post:', err);
+      });
   }, [params.id, router]);
 
   const handleSubmit = async (e) => {

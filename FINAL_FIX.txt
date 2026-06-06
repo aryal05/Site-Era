@@ -1,0 +1,91 @@
+================================================================================
+                        FINAL FIX - DO EXACTLY THIS
+================================================================================
+
+I've cleaned the .next folder completely. Now follow these EXACT steps:
+
+STEP 1: Start Fresh Dev Server
+-------------------------------
+Open NEW terminal/PowerShell window and run:
+
+    cd C:\Users\aryal\Desktop\SITEERA-OWN-COMPANY\site-era
+    npm run dev
+
+Wait for: ✓ Ready in X seconds
+
+STEP 2: Clear ALL Browser Data
+-------------------------------
+In your browser:
+
+1. Press: Ctrl + Shift + Delete
+2. Select: "All time" (not just 1 hour!)
+3. Check ALL boxes:
+   ✓ Browsing history
+   ✓ Cookies
+   ✓ Cached images and files
+   ✓ Everything
+
+4. Click "Clear data"
+5. CLOSE browser completely
+6. RE-OPEN browser
+
+STEP 3: Try Incognito First
+----------------------------
+1. Open Incognito: Ctrl + Shift + N
+2. Go to: http://localhost:3000
+3. Check if error is gone
+
+If it works in Incognito = Browser cache issue (clear cache again)
+If it still fails = There's a code issue
+
+STEP 4: If Still Failing
+-------------------------
+The error shows line 337. Try opening:
+http://localhost:3000/_next/static/chunks/app/layout.js
+
+And see what's actually on line 337.
+
+Or check browser console:
+1. Press F12
+2. Go to Sources tab
+3. Find layout.js
+4. Check line 337
+
+================================================================================
+
+ALTERNATIVE: Use Different Browser
+-----------------------------------
+If you have another browser (Chrome, Edge, Firefox):
+1. Open that browser
+2. Go to http://localhost:3000
+3. Check if it works there
+
+================================================================================
+
+NUCLEAR OPTION: Complete Reset
+-------------------------------
+If nothing works:
+
+1. Stop dev server (Ctrl+C)
+2. Delete node_modules:
+   Remove-Item -Recurse -Force node_modules
+
+3. Reinstall:
+   npm install
+
+4. Start:
+   npm run dev
+
+5. Clear browser cache completely
+6. Try again
+
+================================================================================
+
+The  character you see is a BOM (Byte Order Mark). This is usually from:
+- Copy/paste from Word/Rich text
+- Wrong file encoding
+- Windows/Mac file transfer issues
+
+I've rebuilt the layout.jsx file cleanly. Just need fresh browser cache now.
+
+================================================================================

@@ -3,8 +3,8 @@
 import { useMemo, useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { ArrowUpRight, ArrowRight, ExternalLink } from "lucide-react";
+import OptimizedImage from "@/components/ui/OptimizedImage";
 
 const Portfolio = ({ projects = [] }) => {
   const ref = useRef(null);
@@ -108,82 +108,103 @@ const Portfolio = ({ projects = [] }) => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.25, delay: index * 0.05 }}
                   >
-                    <Link href={`/portfolio/${project.slug}`}>
-                      <div className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-700 hover:shadow-large transition-all duration-300">
-                        <div
-                          className={`h-64 ${project.image ? "bg-gray-100 dark:bg-gray-800" : `bg-gradient-to-br ${color}`} relative overflow-hidden flex items-center justify-center`}
-                        >
-                          {project.image ? (
-                            <Image
-                              src={project.image}
-                              alt={project.title}
-                              fill
-                              sizes="(max-width: 768px) 100vw, 50vw"
-                              className="object-contain"
-                              unoptimized
-                            />
-                          ) : (
-                            <>
-                              <div className="absolute inset-0 bg-black/10" />
-                              <span className="text-white/30 text-6xl font-bold relative z-10">
-                                {project.title.charAt(0)}
-                              </span>
-                            </>
-                          )}
+                      <div className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-700 hover:shadow-large transition-all duration-300 flex flex-col">
+                        <Link href={`/portfolio/${project.slug}`} className="block">
+                          <div
+                            className={`h-64 ${project.image ? "bg-gray-100 dark:bg-gray-800" : `bg-gradient-to-br ${color}`} relative overflow-hidden flex items-center justify-center`}
+                          >
+                            {project.image ? (
+                              <OptimizedImage
+                                src={project.image}
+                                alt={project.title}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                className="object-cover"
+                                loading={index < 4 ? "eager" : "lazy"}
+                                priority={index < 2}
+                                quality="auto"
+                              />
+                            ) : (
+                              <>
+                                <div className="absolute inset-0 bg-black/10" />
+                                <span className="text-white/30 text-6xl font-bold relative z-10">
+                                  {project.title.charAt(0)}
+                                </span>
+                              </>
+                            )}
 
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center">
-                              <ArrowUpRight className="w-6 h-6 text-gray-900" />
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center">
+                                <ArrowUpRight className="w-6 h-6 text-gray-900" />
+                              </div>
+                            </div>
+
+                            <div className="absolute top-4 right-4 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">
+                              {year}
                             </div>
                           </div>
+                        </Link>
 
-                          <div className="absolute top-4 right-4 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">
-                            {year}
-                          </div>
-                        </div>
-
-                        <div className="p-6">
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="text-xs font-medium text-primary-600 bg-primary-50 dark:bg-primary-900/30 px-2.5 py-1 rounded-full">
-                              {project.category}
-                            </span>
-                            {project.client && (
-                              <span className="text-xs text-gray-500 dark:text-gray-400">
-                                {project.client}
+                        <div className="p-6 flex flex-col flex-1">
+                          <Link href={`/portfolio/${project.slug}`} className="block flex-1">
+                            <div className="flex items-center gap-2 mb-3">
+                              <span className="text-xs font-medium text-primary-600 bg-primary-50 dark:bg-primary-900/30 px-2.5 py-1 rounded-full">
+                                {project.category}
                               </span>
-                            )}
-                          </div>
-
-                          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 transition-colors">
-                            {project.title}
-                          </h3>
-
-                          <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
-                            {project.description}
-                          </p>
-
-                          {project.technologies?.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                              {project.technologies
-                                .slice(0, 3)
-                                .map((tag, i) => (
-                                  <span
-                                    key={i}
-                                    className="text-xs px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full"
-                                  >
-                                    {tag}
-                                  </span>
-                                ))}
-                              {project.technologies.length > 3 && (
-                                <span className="text-xs px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full">
-                                  +{project.technologies.length - 3}
+                              {project.client && (
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                  {project.client}
                                 </span>
                               )}
                             </div>
-                          )}
+
+                            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 transition-colors">
+                              {project.title}
+                            </h3>
+
+                            <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
+                              {project.description}
+                            </p>
+                          </Link>
+
+                          <div className="flex items-center justify-between mt-auto">
+                            {project.technologies?.length > 0 ? (
+                              <div className="flex flex-wrap gap-2">
+                                {project.technologies
+                                  .slice(0, 3)
+                                  .map((tag, i) => (
+                                    <span
+                                      key={i}
+                                      className="text-xs px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full"
+                                    >
+                                      {tag}
+                                    </span>
+                                  ))}
+                                {project.technologies.length > 3 && (
+                                  <span className="text-xs px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full">
+                                    +{project.technologies.length - 3}
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <div />
+                            )}
+
+                            {project.link && (
+                              <a
+                                href={project.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-600 text-white text-xs font-medium rounded-lg hover:bg-primary-700 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 flex-shrink-0"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5" />
+                                Live
+                              </a>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </Link>
                   </motion.div>
                 );
               })}

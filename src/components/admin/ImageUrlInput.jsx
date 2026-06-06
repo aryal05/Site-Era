@@ -32,25 +32,32 @@ export default function ImageUrlInput({
   const fileInputRef = useRef(null);
   const galleryFileInputRef = useRef(null);
 
-  // Convert file to base64 data URL
-  const fileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        reject(new Error("Please select an image file"));
-        return;
-      }
-      // Limit to 5MB
-      if (file.size > 5 * 1024 * 1024) {
-        reject(new Error("Image must be under 5MB"));
-        return;
-      }
+  // Upload file to Cloudinary
+  const uploadToCloudinary = async (file) => {
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      throw new Error("Please select an image file");
+    }
+    // Limit to 10MB
+    if (file.size > 10 * 1024 * 1024) {
+      throw new Error("Image must be under 10MB");
+    }
 
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error("Failed to read file"));
-      reader.readAsDataURL(file);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
     });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Upload failed");
+    }
+
+    const data = await response.json();
+    return data.url;
   };
 
   // Handle single file upload
@@ -60,8 +67,8 @@ export default function ImageUrlInput({
 
     setUploading(true);
     try {
-      const base64 = await fileToBase64(file);
-      onChange(base64);
+      const cloudinaryUrl = await uploadToCloudinary(file);
+      onChange(cloudinaryUrl);
       setImageError(false);
     } catch (err) {
       alert(err.message);
@@ -79,10 +86,10 @@ export default function ImageUrlInput({
 
     setUploading(true);
     try {
-      const base64Images = await Promise.all(
-        files.map((file) => fileToBase64(file)),
+      const cloudinaryUrls = await Promise.all(
+        files.map((file) => uploadToCloudinary(file))
       );
-      onGalleryChange([...galleryValues, ...base64Images]);
+      onGalleryChange([...galleryValues, ...cloudinaryUrls]);
     } catch (err) {
       alert(err.message);
     } finally {
@@ -111,7 +118,7 @@ export default function ImageUrlInput({
               />
               <input
                 type="url"
-                value={value && !value.startsWith("data:") ? value : ""}
+                value={value || ""}
                 onChange={(e) => {
                   onChange(e.target.value);
                   setImageError(false);
@@ -171,11 +178,6 @@ export default function ImageUrlInput({
               >
                 <X size={14} />
               </button>
-              {value.startsWith("data:") && (
-                <span className="absolute bottom-2 left-2 text-xs bg-primary-600/80 text-white px-2 py-0.5 rounded">
-                  Uploaded
-                </span>
-              )}
             </div>
           )}
         </div>
@@ -290,7 +292,7 @@ export default function ImageUrlInput({
                 <X size={12} />
               </button>
               <span className="absolute bottom-1.5 left-1.5 text-xs bg-black/60 text-white px-2 py-0.5 rounded">
-                {url.startsWith("data:") ? "[img]" : "[url]"} {index + 1}
+                {index + 1}
               </span>
             </div>
           ))}

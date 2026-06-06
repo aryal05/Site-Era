@@ -6,6 +6,7 @@ import {
   mapProject,
   notFound,
   projectPayload,
+  safeImageUrl,
 } from "@/lib/api-helpers";
 
 export const dynamic = "force-dynamic";
@@ -30,14 +31,12 @@ const DETAIL_COLUMNS = `
   meta_title,
   meta_description,
   created_at,
-  updated_at,
-  features,
-  results
+  updated_at
 `;
 
 export async function GET(_request, context) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
     const db = getDb();
 
     const { data, error } = await byIdOrSlug(
@@ -60,7 +59,7 @@ export async function GET(_request, context) {
 
 export async function PUT(request, context) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
     const db = getDb();
     const body = await request.json();
     const payload = projectPayload(body);
@@ -81,7 +80,7 @@ export async function PUT(request, context) {
 
 export async function DELETE(_request, context) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
     const db = getDb();
 
     const { error } = await byIdOrSlug(db.from("projects").delete(), id);

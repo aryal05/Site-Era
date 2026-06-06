@@ -2,9 +2,9 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
 import { Calendar, Clock, ArrowLeft, Share2 } from "lucide-react";
 import dynamic from "next/dynamic";
+import OptimizedImage from "@/components/ui/OptimizedImage";
 
 const AnimatedGrid = dynamic(() => import("@/components/ui/AnimatedGrid"), {
   ssr: false,
@@ -92,14 +92,14 @@ const BlogPostPage = ({ post }) => {
               transition={{ duration: 0.6 }}
               className="max-w-4xl mx-auto rounded-2xl overflow-hidden"
             >
-              <Image
+              <OptimizedImage
                 src={post.image}
                 alt={post.title}
                 className="w-full h-auto object-cover"
-                width={800}
+                width={1200}
                 height={600}
                 priority
-                unoptimized
+                quality="auto"
               />
             </motion.div>
           </div>

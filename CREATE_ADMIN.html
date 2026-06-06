@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Admin User - Codeverse</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+        .info-box h3 {
+            color: #1e40af;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .info-box p {
+            color: #334155;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading.active {
+            display: block;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .result {
+            display: none;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .result.active {
+            display: block;
+        }
+        .result.success {
+            background: #d1fae5;
+            border: 1px solid #059669;
+            color: #065f46;
+        }
+        .result.error {
+            background: #fee2e2;
+            border: 1px solid #dc2626;
+            color: #991b1b;
+        }
+        .result.info {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+        }
+        .result h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .result p {
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .credentials {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .credentials p {
+            margin-bottom: 5px;
+        }
+        .code {
+            background: #1e293b;
+            color: #f1f5f9;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .steps {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .steps li {
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 14px;
+        }
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .warning strong {
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Create Admin User</h1>
+        <p class="subtitle">Codeverse Admin Panel Setup</p>
+
+        <div class="info-box">
+            <h3>What This Does:</h3>
+            <p>This will create an admin user in your Supabase database so you can login to <strong>/admin</strong></p>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Important:</strong> Make sure your dev server is running on <code>http://localhost:3000</code> before clicking the button!
+        </div>
+
+        <button id="createBtn" class="btn" onclick="createAdmin()">
+            Create Admin User
+        </button>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Creating admin user...</p>
+        </div>
+
+        <div id="result" class="result"></div>
+
+        <div class="info-box">
+            <h3>Default Credentials:</h3>
+            <div class="credentials">
+                <p><strong>Username:</strong> admin</p>
+                <p><strong>Password:</strong> admin123</p>
+            </div>
+            <p style="margin-top: 10px;">⚠️ Change this password after first login!</p>
+        </div>
+    </div>
+
+    <script>
+        async function createAdmin() {
+            const btn = document.getElementById('createBtn');
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+
+            // Reset
+            btn.disabled = true;
+            loading.classList.add('active');
+            result.classList.remove('active', 'success', 'error', 'info');
+            result.innerHTML = '';
+
+            try {
+                const response = await fetch('http://localhost:3000/api/create-admin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                loading.classList.remove('active');
+
+                if (data.status === 'success') {
+                    result.className = 'result active success';
+                    result.innerHTML = `
+                        <h3>✅ ${data.message}</h3>
+                        <div class="credentials">
+                            <p><strong>Username:</strong> ${data.credentials.username}</p>
+                            <p><strong>Password:</strong> ${data.credentials.password}</p>
+                        </div>
+                        <div class="steps">
+                            <strong>Next Steps:</strong>
+                            <ol>
+                                <li>Go to <a href="http://localhost:3000/admin" target="_blank">http://localhost:3000/admin</a></li>
+                                <li>Login with the credentials above</li>
+                                <li>Change your password in Settings</li>
+                            </ol>
+                        </div>
+                        <p style="margin-top: 15px;">
+                            <a href="http://localhost:3000/admin" target="_blank" style="color: #059669; text-decoration: underline;">
+                                → Open Admin Panel Now
+                            </a>
+                        </p>
+                    `;
+                } else if (data.status === 'info') {
+                    result.className = 'result active info';
+                    result.innerHTML = `
+                        <h3>ℹ️ ${data.message}</h3>
+                        <p>The admin user already exists. You can login now:</p>
+                        <div class="credentials">
+                            <p><strong>Username:</strong> admin</p>
+                            <p><strong>Password:</strong> admin123 (or your changed password)</p>
+                        </div>
+                        <p style="margin-top: 15px;">
+                            <a href="http://localhost:3000/admin" target="_blank" style="color: #92400e; text-decoration: underline;">
+                                → Open Admin Panel Now
+                            </a>
+                        </p>
+                        ${!data.active ? '<p style="margin-top: 15px; color: #991b1b;"><strong>⚠️ Note:</strong> User exists but is not active. Check database.</p>' : ''}
+                    `;
+                } else {
+                    throw new Error(data.message || 'Failed to create admin user');
+                }
+            } catch (error) {
+                loading.classList.remove('active');
+                result.className = 'result active error';
+                result.innerHTML = `
+                    <h3>❌ Error</h3>
+                    <p><strong>Failed to create admin user:</strong></p>
+                    <div class="code">${error.message}</div>
+                    <div class="steps">
+                        <strong>Troubleshooting:</strong>
+                        <ol>
+                            <li>Make sure dev server is running: <code>npm run dev</code></li>
+                            <li>Check if you can access: <a href="http://localhost:3000" target="_blank">http://localhost:3000</a></li>
+                            <li>Verify .env.local has correct Supabase credentials</li>
+                            <li>Try running CREATE_ADMIN_USER.sql in Supabase SQL Editor</li>
+                        </ol>
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // Check if server is running on page load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('http://localhost:3000/api/create-admin');
+                // Server is running, endpoint exists
+            } catch (error) {
+                const result = document.getElementById('result');
+                result.className = 'result active error';
+                result.innerHTML = `
+                    <h3>⚠️ Server Not Running</h3>
+                    <p>Cannot connect to <code>http://localhost:3000</code></p>
+                    <div class="steps">
+                        <strong>To fix this:</strong>
+                        <ol>
+                            <li>Open terminal in your project folder</li>
+                            <li>Run: <code>npm run dev</code></li>
+                            <li>Wait for "Ready" message</li>
+                            <li>Refresh this page</li>
+                        </ol>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -36,20 +36,32 @@ async function getBlogPosts() {
 
     if (error) throw error;
 
-    return (data || []).map((post) => ({
-      _id: post.id,
-      id: post.id,
-      title: post.title,
-      slug: post.slug,
-      excerpt: post.excerpt || "",
-      image: post.image || "",
-      author: post.author || { name: "Admin" },
-      category: post.category || "General",
-      tags: Array.isArray(post.tags) ? post.tags : [],
-      readTime: post.read_time || "5 min read",
-      featured: !!post.featured,
-      createdAt: post.created_at,
-    }));
+    return (data || []).map((post) => {
+      let imageUrl = "";
+      
+      // Only include Cloudinary URLs for fast loading
+      if (post.image && typeof post.image === 'string') {
+        if (post.image.includes('cloudinary.com') || post.image.startsWith('http')) {
+          imageUrl = post.image;
+        }
+        // Skip base64 images - they'll show gradient placeholder
+      }
+
+      return {
+        _id: post.id,
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt || "",
+        image: imageUrl,
+        author: post.author || { name: "Admin" },
+        category: post.category || "General",
+        tags: Array.isArray(post.tags) ? post.tags : [],
+        readTime: post.read_time || "5 min read",
+        featured: !!post.featured,
+        createdAt: post.created_at,
+      };
+    });
   } catch (error) {
     console.error("Failed to fetch blog posts:", error);
     return [];

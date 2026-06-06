@@ -3,13 +3,15 @@
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ArrowUpRight, Expand, ExternalLink } from "lucide-react";
 import PageHeader from "@/components/ui/PageHeader";
+import OptimizedImage from "@/components/ui/OptimizedImage";
 
-// Loaded only when user clicks expand - skips SSR entirely
+// Lazy load lightbox - only when needed
 const ImageLightbox = dynamic(() => import("@/components/ui/ImageLightbox"), {
   ssr: false,
+  loading: () => null,
 });
 
 const COLORS = [
@@ -26,22 +28,31 @@ const ProjectCard = ({ project, index, onExpand }) => {
   const year = project.createdAt
     ? new Date(project.createdAt).getFullYear()
     : "";
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/portfolio/${project.slug}`);
+  };
 
   return (
-    <div className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-800 hover:shadow-xl transition-all duration-200 h-full">
+    <div 
+      onClick={handleCardClick}
+      className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-800 hover:shadow-xl transition-all duration-200 h-full cursor-pointer"
+    >
       {/* Image */}
       <div
         className={`h-52 relative overflow-hidden ${project.image ? "bg-gray-100 dark:bg-gray-700" : `bg-gradient-to-br ${color}`}`}
       >
         {project.image ? (
-          <Image
+          <OptimizedImage
             src={project.image}
             alt={project.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
-            unoptimized
             loading={index < 6 ? "eager" : "lazy"}
+            priority={index < 3}
+            quality="auto"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -53,16 +64,19 @@ const ProjectCard = ({ project, index, onExpand }) => {
 
         {/* Hover overlay - pure CSS, no framer-motion */}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-3">
-          <Link
-            href={`/portfolio/${project.slug}`}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCardClick();
+            }}
             className="w-11 h-11 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform"
           >
             <ArrowUpRight className="w-5 h-5 text-gray-900" />
-          </Link>
+          </button>
           {project.image && (
             <button
               onClick={(e) => {
-                e.preventDefault();
+                e.stopPropagation();
                 onExpand(project);
               }}
               className="w-11 h-11 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform"
@@ -80,7 +94,7 @@ const ProjectCard = ({ project, index, onExpand }) => {
       </div>
 
       {/* Content */}
-      <Link href={`/portfolio/${project.slug}`} className="block p-5">
+      <div className="p-5 flex flex-col flex-1">
         <div className="flex items-center justify-between mb-2">
           {project.category && (
             <span className="text-xs font-medium text-primary-600 bg-primary-50 dark:bg-primary-900/30 px-2.5 py-1 rounded-full">
@@ -102,24 +116,41 @@ const ProjectCard = ({ project, index, onExpand }) => {
           {project.description}
         </p>
 
-        {project.technologies?.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {project.technologies.slice(0, 3).map((tag, i) => (
-              <span
-                key={i}
-                className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded"
-              >
-                {tag}
-              </span>
-            ))}
-            {project.technologies.length > 3 && (
-              <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-500 rounded">
-                +{project.technologies.length - 3}
-              </span>
-            )}
-          </div>
-        )}
-      </Link>
+        <div className="flex items-center justify-between mt-auto pt-1">
+          {project.technologies?.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5">
+              {project.technologies.slice(0, 3).map((tag, i) => (
+                <span
+                  key={i}
+                  className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded"
+                >
+                  {tag}
+                </span>
+              ))}
+              {project.technologies.length > 3 && (
+                <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-500 rounded">
+                  +{project.technologies.length - 3}
+                </span>
+              )}
+            </div>
+          ) : (
+            <div />
+          )}
+
+          {project.link && (
+            <a
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-600 text-white text-xs font-medium rounded-lg hover:bg-primary-700 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 flex-shrink-0"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              Live
+            </a>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

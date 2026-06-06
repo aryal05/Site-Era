@@ -31,6 +31,20 @@ const getEnvVars = () => ({
 // Safe because env vars are always set by the time the first request arrives.
 let _adminClient = null;
 
+// Wrap fetch with a 30-second timeout to prevent infinite hangs from
+// large base64 image payloads causing ECONNRESET retry loops.
+const FETCH_TIMEOUT_MS = 30_000;
+
+function fetchWithTimeout(url, options = {}) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+  return fetch(url, {
+    ...options,
+    signal: controller.signal,
+  }).finally(() => clearTimeout(timeoutId));
+}
+
 export const getSupabaseAdmin = () => {
   if (_adminClient) return _adminClient;
 
@@ -45,7 +59,7 @@ export const getSupabaseAdmin = () => {
 
   _adminClient = createSupabaseClient(url, serviceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
-    global: { fetch: fetch }, // reuse Node.js fetch connection pool
+    global: { fetch: fetchWithTimeout },
   });
 
   return _adminClient;
