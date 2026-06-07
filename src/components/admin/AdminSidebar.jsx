@@ -43,9 +43,11 @@ const AdminSidebar = ({ onLogout }) => {
               exit={{ opacity: 0 }}
               className="flex items-center gap-2"
             >
-              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold">C</span>
-              </div>
+              <img 
+                src="/logo.jpeg" 
+                alt="CodeVerse Logo" 
+                className="w-8 h-8 object-contain rounded-lg"
+              />
               <span className="text-lg font-semibold text-white">
                 Code<span className="text-primary-500">verse</span>
               </span>

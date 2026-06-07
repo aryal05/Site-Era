@@ -47,9 +47,11 @@ const Navbar = () => {
           <nav className="flex items-center justify-between h-18">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center group-hover:bg-primary-700 transition-colors">
-                <span className="text-white font-bold text-lg">C</span>
-              </div>
+              <img 
+                src="/logo.jpeg" 
+                alt="CodeVerse Logo" 
+                className="w-10 h-10 object-contain rounded-xl group-hover:scale-105 transition-transform"
+              />
               <span className="text-xl font-semibold text-gray-900 dark:text-white">
                 Code<span className="text-primary-600">verse</span>
               </span>

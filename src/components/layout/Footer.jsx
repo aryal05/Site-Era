@@ -51,9 +51,11 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="col-span-2 lg:col-span-2">
             <Link href="/" className="inline-flex items-center gap-2 mb-6">
-              <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">C</span>
-              </div>
+              <img 
+                src="/logo.jpeg" 
+                alt="CodeVerse Logo" 
+                className="w-10 h-10 object-contain rounded-xl"
+              />
               <span className="text-xl font-semibold text-white">
                 Code<span className="text-primary-400">verse</span>
               </span>

@@ -75,9 +75,13 @@ export default function AdminLogin() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", duration: 0.8 }}
-            className="w-16 h-16 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary-600/25"
+            className="w-16 h-16 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary-600/25 p-2"
           >
-            <span className="text-white font-bold text-2xl">C</span>
+            <img 
+              src="/logo.jpeg" 
+              alt="CodeVerse Logo" 
+              className="w-full h-full object-contain"
+            />
           </motion.div>
           <h1 className="text-2xl font-bold text-white mb-1">
             Code<span className="text-primary-500">verse</span> Admin
