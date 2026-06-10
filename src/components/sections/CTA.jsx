@@ -71,9 +71,9 @@ const CTA = () => {
               <Mail className="w-5 h-5" />
               <span>codeversebuild@outlook.com</span>
             </a>
-            <a href="tel:+9779800000000" className="flex items-center gap-2 hover:text-white transition-colors">
+            <a href="tel:+9779762454572" className="flex items-center gap-2 hover:text-white transition-colors">
               <Phone className="w-5 h-5" />
-              <span>+977 980-000-0000</span>
+              <span>+977 976-245-4572</span>
             </a>
             <div className="flex items-center gap-2">
               <MapPin className="w-5 h-5" />

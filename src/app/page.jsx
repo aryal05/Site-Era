@@ -2,6 +2,7 @@ import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Services from "@/components/sections/Services";
 import Portfolio from "@/components/sections/Portfolio";
+import Pricing from "@/components/sections/Pricing";
 import Process from "@/components/sections/Process";
 import Testimonials from "@/components/sections/Testimonials";
 import CTA from "@/components/sections/CTA";
@@ -13,7 +14,7 @@ async function getHomepageData() {
   try {
     const db = getDb();
 
-    const [projectsRes, servicesRes, testimonialsRes] = await Promise.all([
+    const [projectsRes, servicesRes, testimonialsRes, pricingRes] = await Promise.all([
       db
         .from("projects")
         .select("id,title,slug,category,client,description,link,image,created_at")
@@ -38,11 +39,19 @@ async function getHomepageData() {
         .order("order", { ascending: true, nullsFirst: false })
         .order("created_at", { ascending: false })
         .limit(3),
+
+      db
+        .from("pricing_plans")
+        .select("*")
+        .eq("is_active", true)
+        .order("order", { ascending: true })
+        .limit(3),
     ]);
 
     if (projectsRes.error) throw projectsRes.error;
     if (servicesRes.error) throw servicesRes.error;
     if (testimonialsRes.error) throw testimonialsRes.error;
+    // Don't throw for pricing - it might not exist yet
 
     const projects = (projectsRes.data || []).map((row) => ({
       id: row.id,
@@ -75,14 +84,21 @@ async function getHomepageData() {
       rating: row.rating,
     }));
 
-    return { projects, services, testimonials };
+    const pricing = (pricingRes.data || []).map((row) => ({
+      ...row,
+      features: row.features || [],
+      highlighted_features: row.highlighted_features || [],
+      not_included: row.not_included || [],
+    }));
+
+    return { projects, services, testimonials, pricing };
   } catch {
-    return { projects: [], services: [], testimonials: [] };
+    return { projects: [], services: [], testimonials: [], pricing: [] };
   }
 }
 
 export default async function Home() {
-  const { projects, services, testimonials } = await getHomepageData();
+  const { projects, services, testimonials, pricing } = await getHomepageData();
 
   return (
     <>
@@ -90,6 +106,7 @@ export default async function Home() {
       <About />
       <Services services={services} />
       <Portfolio projects={projects} />
+      <Pricing plans={pricing} />
       <Process />
       <Testimonials testimonials={testimonials} />
       <CTA />

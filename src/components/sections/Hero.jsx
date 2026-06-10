@@ -23,7 +23,7 @@ const Hero = () => {
 
   const features = [
     "Award-winning design team",
-    "150+ successful projects",
+    "Many successful projects",
     "99% client satisfaction rate",
   ];
 

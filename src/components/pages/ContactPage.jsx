@@ -318,9 +318,9 @@ const ContactPage = () => {
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                         >
                           <option value="">Select budget</option>
-                          <option value="35k-75k">NPR 35K - 75K</option>
-                          <option value="75k-110k">NPR 75K - 110K</option>
-                          <option value="110k-150k">NPR 110K - 150K</option>
+                          <option value="base-50k">Base Package - NPR 50K</option>
+                          <option value="advanced-75k-95k">Advanced - NPR 75K to 95K</option>
+                          <option value="custom-95k-150k">Custom - NPR 95K to 150K</option>
                         </select>
                       </div>
                     </div>

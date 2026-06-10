@@ -258,7 +258,7 @@ export default function TeamPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-1">Phone</label>
-                  <input type="tel" placeholder="+977 980-000-0000" value={editModal.phone} onChange={(e) => setEditModal({ ...editModal, phone: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 focus:outline-none" />
+                  <input type="tel" placeholder="+977 976-245-4572" value={editModal.phone} onChange={(e) => setEditModal({ ...editModal, phone: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 focus:outline-none" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-1">Bio</label>

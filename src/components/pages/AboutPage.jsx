@@ -93,7 +93,7 @@ const AboutPage = () => {
   ];
 
   const stats = [
-    { value: "150+", label: "Projects Completed" },
+    { value: "Many", label: "Successful Projects" },
     { value: "50+", label: "Happy Clients" },
     { value: "9+", label: "Years Experience" },
     { value: "15+", label: "Team Members" },

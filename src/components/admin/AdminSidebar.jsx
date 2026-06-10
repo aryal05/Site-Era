@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, FolderOpen, FileText, MessageSquare, 
   Users, Settings, LogOut, ChevronLeft, ChevronRight,
-  Briefcase, Star, Bell, Search, BarChart3
+  Briefcase, Star, Bell, Search, BarChart3, DollarSign
 } from 'lucide-react';
 
 const AdminSidebar = ({ onLogout }) => {
@@ -19,6 +19,7 @@ const AdminSidebar = ({ onLogout }) => {
     { icon: BarChart3, label: 'Analytics', href: '/admin/dashboard/analytics' },
     { icon: FolderOpen, label: 'Projects', href: '/admin/dashboard/projects' },
     { icon: Briefcase, label: 'Services', href: '/admin/dashboard/services' },
+    { icon: DollarSign, label: 'Pricing', href: '/admin/dashboard/pricing' },
     { icon: FileText, label: 'Blog Posts', href: '/admin/dashboard/blog' },
     { icon: Users, label: 'Team', href: '/admin/dashboard/team' },
     { icon: Star, label: 'Testimonials', href: '/admin/dashboard/testimonials' },

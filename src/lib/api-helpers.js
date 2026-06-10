@@ -1,7 +1,42 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
+import jwt from "jsonwebtoken";
 
 export const dynamic = "force-dynamic";
+
+/**
+ * Verify JWT authentication from request headers
+ * @param {Request} request - The incoming request
+ * @returns {object} - { user: decoded token } or { error: string }
+ */
+export function verifyAuth(request) {
+  try {
+    const authHeader = request.headers.get("authorization");
+    
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return { error: "Authorization token required" };
+    }
+
+    const token = authHeader.split(" ")[1];
+    const secret = process.env.JWT_SECRET;
+
+    if (!secret) {
+      console.error("JWT_SECRET not configured");
+      return { error: "Server configuration error" };
+    }
+
+    const decoded = jwt.verify(token, secret);
+    return { user: decoded };
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return { error: "Token expired. Please login again." };
+    }
+    if (error.name === "JsonWebTokenError") {
+      return { error: "Invalid token" };
+    }
+    return { error: "Authentication failed" };
+  }
+}
 
 // Strip base64 data URIs - they make RSC payloads enormous (each can be 2-10MB).
 // For list/grid views, replace with null so the gradient placeholder shows instead.
