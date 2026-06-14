@@ -74,6 +74,55 @@ export async function GET(request) {
   }
 }
 
+export async function POST(request) {
+  try {
+    const db = getDb();
+    const body = await request.json();
+    let payload = blogPayload(body, { insert: true });
+
+    // Check if slug already exists and generate unique slug if needed
+    if (payload.slug) {
+      const { data: existing } = await db
+        .from("blog")
+        .select("slug")
+        .eq("slug", payload.slug)
+        .single();
+
+      if (existing) {
+        // Generate unique slug by appending a number
+        let counter = 1;
+        let uniqueSlug = `${payload.slug}-${counter}`;
+        
+        while (true) {
+          const { data: check } = await db
+            .from("blog")
+            .select("slug")
+            .eq("slug", uniqueSlug)
+            .single();
+          
+          if (!check) break;
+          counter++;
+          uniqueSlug = `${payload.slug}-${counter}`;
+        }
+        
+        payload.slug = uniqueSlug;
+      }
+    }
+
+    const { data, error } = await db
+      .from("blog")
+      .insert(payload)
+      .select(BLOG_DETAIL_COLUMNS)
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json(mapBlog(data), { status: 201 });
+  } catch (error) {
+    return handleApiError(error, "Failed to create blog post");
+  }
+}
+
 export async function PUT(request, context) {
   try {
     const params = await context.params;

@@ -63,7 +63,36 @@ export async function POST(request) {
   try {
     const db = getDb();
     const body = await request.json();
-    const payload = projectPayload(body, { insert: true });
+    let payload = projectPayload(body, { insert: true });
+
+    // Check if slug already exists and generate unique slug if needed
+    if (payload.slug) {
+      const { data: existing } = await db
+        .from("projects")
+        .select("slug")
+        .eq("slug", payload.slug)
+        .single();
+
+      if (existing) {
+        // Generate unique slug by appending a number
+        let counter = 1;
+        let uniqueSlug = `${payload.slug}-${counter}`;
+        
+        while (true) {
+          const { data: check } = await db
+            .from("projects")
+            .select("slug")
+            .eq("slug", uniqueSlug)
+            .single();
+          
+          if (!check) break;
+          counter++;
+          uniqueSlug = `${payload.slug}-${counter}`;
+        }
+        
+        payload.slug = uniqueSlug;
+      }
+    }
 
     const { data, error } = await db
       .from("projects")
